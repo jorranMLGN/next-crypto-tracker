@@ -1,5 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Dashboard } from "@/components/component/dashboard";
+import { ToastProvider } from "@/components/ui/toast";
+import { Toaster } from "@/components/ui/toaster";
 
 function Card({ href, children }: { href: string; children: React.ReactNode }) {
   return (
@@ -10,7 +13,7 @@ function Card({ href, children }: { href: string; children: React.ReactNode }) {
       className="flex items-center justify-center"
     >
       <div
-        className="h-48 w-full gap-x-8 rounded-xl border p-6 text-left shadow-xl transition-all hover:scale-[103%] hover:bg-border/25"
+        className="h-48 w-full gap-x-8 rounded-xl border p-6 text-left shadow-xl transition-all hover:scale-[102%] hover:bg-border/25"
         style={{
           display: "grid",
           gridTemplateAreas: '"title icon" "description icon"',
@@ -69,39 +72,11 @@ function CardIcon({ src, className }: { src: string; className?: string }) {
 
 export default function Home() {
   return (
-    <main className="p-4">
-      <h1 className="my-16 text-center text-4xl font-bold">NextJS Template</h1>
-
-      <div className="grid gap-8 md:grid-cols-2">
-        <Card href="https://nextjs.org">
-          <CardTitle>Next.js</CardTitle>
-          <CardIcon src="/next.svg" className="dark:invert" />
-          <CardDescription>The React Framework for Production</CardDescription>
-        </Card>
-        <Card href="https://www.prisma.io/">
-          <CardTitle>Prisma</CardTitle>
-          <CardIcon src="/prisma.svg" className="dark:invert" />
-          <CardDescription>
-            Next-generation Node.js and TypeScript ORM
-          </CardDescription>
-        </Card>
-        <Card href="https://tailwindcss.com">
-          <CardTitle>TailwindCSS</CardTitle>
-          <CardIcon src="/tailwind.svg" />
-          <CardDescription>
-            Rapidly build modern websites without ever leaving your HTML.
-          </CardDescription>
-        </Card>
-        <Card href="https://ui.shadcn.com/">
-          <CardTitle>shadcn/ui</CardTitle>
-          <CardIcon src="/radix.svg" className="dark:invert" />
-          <CardDescription>
-            Build your component library.
-            <br />
-            Accessible. Customizable. Open Source.
-          </CardDescription>
-        </Card>
-      </div>
-    </main>
+    <>
+      <main className="p-4">
+        <Dashboard />
+      </main>
+      <Toaster />
+    </>
   );
 }
