@@ -12,9 +12,6 @@ export default function AssetData({ children }: { children: ReactNode }) {
   let CoinList: string[] = [];
 
   useEffect(() => {
-    console.log(data);
-  }, [data]);
-  useEffect(() => {
     const ws = new WebSocket("wss://ws.coincap.io/prices?assets=ALL");
 
     ws.onopen = () => {

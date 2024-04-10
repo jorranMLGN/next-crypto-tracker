@@ -16,6 +16,7 @@ import {
   SetStateAction,
   SVGProps,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import CardPlate from "@/components/CardPlate";
@@ -23,12 +24,15 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { getRequestCoinList } from "@/lib/utils";
 import { CoinType } from "@/lib/types";
 import { CoinRow } from "@/components/component/CoinRow";
+import useItemOnScreen from "@/hooks/useItemOnScreen";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const CoinDifference = ({ ...dataCoin }) => {
   return (
@@ -50,46 +54,23 @@ const CoinDifference = ({ ...dataCoin }) => {
 };
 export default function Page() {
   const [list, setList] = useState<CoinType[]>([]);
-  const [isBottom, setIsBottom] = useState(false);
-  let CoinList: string[] = [];
+  const [CoinList, setCoinList] = useState<CoinType[]>([]);
 
-  const isBottomOfScreenView = () => {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-      setIsBottom(true);
-    } else {
-      setIsBottom(false);
-    }
-  };
-
-  useEffect(() => {
-    if (isBottom) {
-      setList((prevList) => {
-        return [
-          ...prevList,
-          ...CoinList.filter(
-            (coin, index) =>
-              index >= prevList.length && index < prevList.length + 10
-          ),
-        ];
-      });
-    }
-  }, [isBottom]);
-
-  useEffect(() => {
-    window.addEventListener("scroll", isBottomOfScreenView);
-    return () => window.removeEventListener("scroll", isBottomOfScreenView);
-  }, []);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     getRequestCoinList().then((data: any) => {
-      // const coinBuffer = data["data"];
-      CoinList = data["data"];
+      setCoinList(data["data"]);
       setList(CoinList.filter((coin, index) => index < 10));
       console.log(CoinList, "data");
-      // setList(coinBuffer);
-      // console.log(coinBuffer, "data");
     });
   }, []);
+
+  const loadMore = () => {
+    setList(CoinList.filter((coin, index) => index < list.length + 10));
+  };
+
+  useItemOnScreen(bottomRef, loadMore as any, { threshold: 1 });
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
@@ -105,7 +86,7 @@ export default function Page() {
             <div className="grid gap-2">
               <CardTitle>
                 Available Coins
-                <Badge variant="outline">{list && list.length} Coins</Badge>
+                <Badge variant="outline">{CoinList.length} Coins</Badge>
               </CardTitle>
 
               <CardDescription>
@@ -115,7 +96,9 @@ export default function Page() {
           </CardHeader>
           <CardContent className={" overflow-x-auto"}>
             <Table>
-              <TableCaption>A list of all current crypto coins.</TableCaption>
+              <TableCaption ref={bottomRef}>
+                <Skeleton />
+              </TableCaption>
               <TableHeader className={"w-full"}>
                 <TableRow>
                   <TableHead>Coin</TableHead>
