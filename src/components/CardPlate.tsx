@@ -1,10 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DollarSignIcon } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { AssetSocketContext } from "@/lib/AssetSocketContext";
 import { getRequestDailyChange } from "@/lib/utils";
-import { Router, useRouter } from "next/router";
 import Link from "next/link";
+import Image from "next/image";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CardPlate({
   token,
@@ -31,6 +31,15 @@ export default function CardPlate({
     });
   }, [token]);
 
+  // Check if content is loading
+  if (priceDayChange === "") {
+    return (
+      <Card className="cursor-pointer" x-chunk="dashboard-01-chunk-0">
+        <Skeleton className="h-28" />
+      </Card>
+    );
+  }
+
   return (
     <Card className="cursor-pointer" x-chunk="dashboard-01-chunk-0">
       <Link href={href || `/coin/${token}`}>
@@ -38,7 +47,13 @@ export default function CardPlate({
           <CardTitle className="text-sm font-medium capitalize">
             {title || token}
           </CardTitle>
-          <DollarSignIcon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+          <Image
+            src={`https://raw.githubusercontent.com/ErikThiart/cryptocurrency-icons/master/16/${token}.png`}
+            alt={title || token}
+            width={16}
+            height={16}
+          />
+          {/* <DollarSignIcon size={16} /> */}
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">

@@ -28,7 +28,7 @@ export async function getRequestDailyChange(coin: string = "bitcoin") {
 
 export async function getRequestCoinList() {
   return await axios
-    .get("https://api.coincap.io/v2/assets")
+    .get("https://api.coincap.io/v2/assets?limit=2000")
     .then((response) => response.data as { data: CoinType[] })
     .catch((error) => console.error(error));
 }
