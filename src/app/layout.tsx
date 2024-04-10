@@ -1,20 +1,20 @@
 import "@/styles/globals.scss";
 import { Inter } from "next/font/google";
 
+import { ReactNode } from "react";
+import AssetSocketContext from "@/lib/AssetSocketContext";
+import Dashboard from "@/components/dashboard";
+
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata = {
-  title: "Create Next App",
-};
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className="dark">
-      <body className={inter.className}>{children}</body>
+      <AssetSocketContext>
+        <body className={inter.className}>
+          <Dashboard>{children}</Dashboard>
+        </body>
+      </AssetSocketContext>
     </html>
   );
 }
