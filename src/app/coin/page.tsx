@@ -21,16 +21,48 @@ import { JSX, SVGProps, useContext, useEffect, useState } from "react";
 import { getRequestCoin } from "@/lib/utils";
 import Overview from "@/components/OverviewChart";
 import { AssetSocketContext } from "@/lib/AssetSocketContext";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/components/ui/use-toast";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function Page({ params }: { params: { slug: string } }) {
   let { slug } = params;
   let data = useContext(AssetSocketContext);
-  const [livePrice, setLivePrice] = useState(
-    data[slug] ? data[slug] : "Loading..."
-  );
+  const { toast } = useToast();
 
   const [coinData, setCoinData] = useState(null);
   const [buyAmount, setBuyAmount] = useState(0);
+
+  // Store the favorite in the local storage
+  const addToFavorites = () => {
+    let favorites = localStorage.getItem("favorites");
+    toast({
+      title: "Added to favorites",
+      description: `You have Added ${slug} To your favorites`,
+      duration: 5000,
+    });
+    if (favorites) {
+      let favoritesArray = JSON.parse(favorites);
+      favoritesArray.push(slug);
+      localStorage.setItem("favorites", JSON.stringify(favoritesArray));
+    } else {
+      localStorage.setItem("favorites", JSON.stringify([slug]));
+    }
+  };
+
+  const removeFromFavorites = () => {
+    let favorites = localStorage.getItem("favorites");
+    if (favorites) {
+      let favoritesArray = JSON.parse(favorites);
+      let newFavorites = favoritesArray.filter((coin: string) => coin !== slug);
+      localStorage.setItem("favorites", JSON.stringify(newFavorites));
+      toast({
+        title: "Removed from favorites",
+        description: `You have removed ${slug} from your favorites`,
+        duration: 5000,
+      });
+    }
+  };
 
   useEffect(() => {
     getRequestCoin(slug).then((data: any) => {
@@ -41,25 +73,51 @@ export default function Page({ params }: { params: { slug: string } }) {
     });
   }, []);
 
+  const isFavorite = () => {
+    let favorites = localStorage.getItem("favorites");
+    if (favorites) {
+      let favoritesArray = JSON.parse(favorites);
+      return favoritesArray.includes(slug);
+    }
+    return false;
+  };
+
   if (!coinData) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Skeleton />
+      </div>
+    );
   }
 
   return (
     <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+      <Toaster />
       <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
         <div className="flex items-center gap-4">
-          <Button className="h-7 w-7" size="icon" variant="outline">
+          <Button
+            onClick={() => window.history.back()}
+            className="h-7 w-7"
+            size="icon"
+            variant="outline"
+          >
             <ChevronLeftIcon className="h-4 w-4" />
             <span className="sr-only">Back</span>
           </Button>
-          <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
+          <h1 className="flex-1 shrink-0 whitespace-nowrap text-4xl font-semibold tracking-tight sm:grow-0">
             {coinData["name"]}
           </h1>
 
           <div className="hidden items-center gap-2 md:ml-auto md:flex">
-            <Button className={"flex gap-1"} size="sm">
-              Add to favorites{<StarIcon />}
+            <Button
+              className="flex items-center justify-end gap-1 transition-all active:scale-95"
+              onClick={isFavorite() ? removeFromFavorites : addToFavorites}
+              size="sm"
+              variant={isFavorite() ? "outline" : "default"}
+              color={isFavorite() ? "yellow" : "gray"}
+            >
+              <StarIcon />
+              {isFavorite() ? "Remove favorite" : "Add to favorites"}
             </Button>
           </div>
         </div>
@@ -159,7 +217,7 @@ export default function Page({ params }: { params: { slug: string } }) {
           <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
             <Card x-chunk="dashboard-07-chunk-3">
               <CardHeader>
-                <CardTitle>Coin Price</CardTitle>
+                <CardTitle>{coinData["name"]} Price</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-6">

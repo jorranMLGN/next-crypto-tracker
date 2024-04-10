@@ -55,7 +55,6 @@ const CoinDifference = ({ ...dataCoin }) => {
 export default function Page() {
   const [list, setList] = useState<CoinType[]>([]);
   const [CoinList, setCoinList] = useState<CoinType[]>([]);
-
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -112,7 +111,8 @@ export default function Page() {
               </TableHeader>
 
               <TableBody>
-                {list && list.map((coin) => <CoinRow {...coin} />)}
+                {list &&
+                  list.map((coin, index) => <CoinRow key={index} {...coin} />)}
               </TableBody>
             </Table>
           </CardContent>

@@ -44,13 +44,13 @@ export default function Dashboard({ children }: { children: ReactNode }) {
             className="text-gray-500 transition-colors hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-50"
             href="#"
           >
-            Orders
+            Charts
           </Link>
           <Link
             className="text-gray-500 transition-colors hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-50"
             href="#"
           >
-            Products
+            Favorites
           </Link>
           <Link
             className="text-gray-500 transition-colors hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-50"
