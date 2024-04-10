@@ -1,8 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-
 import { Input } from "@/components/ui/input";
-
 import {
   Card,
   CardContent,
@@ -12,16 +10,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle";
 import {
   Select,
   SelectContent,
@@ -34,7 +22,8 @@ import { getRequestCoin } from "@/lib/utils";
 import Overview from "@/components/OverviewChart";
 import { AssetSocketContext } from "@/lib/AssetSocketContext";
 
-export function CoinPage({ slug }: { slug: string }) {
+export default function Page({ params }: { params: { slug: string } }) {
+  let { slug } = params;
   let data = useContext(AssetSocketContext);
   const [livePrice, setLivePrice] = useState(
     data[slug] ? data[slug] : "Loading..."
