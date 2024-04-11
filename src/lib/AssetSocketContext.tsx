@@ -1,5 +1,7 @@
 "use client";
 import { createContext, ReactNode, useEffect, useState } from "react";
+import { CoinType } from "@/lib/types";
+import { getRequestCoinList } from "@/lib/utils";
 
 interface Coin {
   [coin: string]: number;
@@ -9,7 +11,7 @@ export const AssetSocketContext = createContext<Coin>({});
 
 export default function AssetData({ children }: { children: ReactNode }) {
   const [data, setData] = useState<Coin>({});
-  let CoinList: string[] = [];
+  const [dataValue, setDataValue] = useState<CoinType>();
 
   useEffect(() => {
     const ws = new WebSocket("wss://ws.coincap.io/prices?assets=ALL");
@@ -32,6 +34,13 @@ export default function AssetData({ children }: { children: ReactNode }) {
     ws.onclose = () => {
       console.log("Disconnected from the server");
     };
+  }, []);
+
+  useEffect(() => {
+    getRequestCoinList().then((data: any) => {
+      setDataValue(data["data"]);
+      console.log(data, "useEffect data");
+    });
   }, []);
 
   return (

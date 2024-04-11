@@ -18,7 +18,9 @@ export default function CardPlate({
   href?: string;
 }) {
   const [priceDayChange, setPriceDayChange] = useState("");
+
   const data = useContext(AssetSocketContext);
+  const [priceUpOrDown, setPriceUpOrDown] = useState(false);
 
   useEffect(() => {
     getRequestDailyChange(token).then((data: any) => {
@@ -53,19 +55,19 @@ export default function CardPlate({
             width={16}
             height={16}
           />
-          {/* <DollarSignIcon size={16} /> */}
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
-            $&nbsp;{data[token] || "Loading..."}
+            $&nbsp;
+            {data[token] || "Loading..."}
           </div>
           <p
             className="text-xs text-gray-500 dark:text-gray-400"
             style={{
-              color: priceDayChange.includes("-") ? "indianred" : "green",
+              color: priceDayChange.includes("-") ? "red" : "green",
             }}
           >
-            {priceDayChange || "Loading..."}
+            {priceDayChange}
           </p>
         </CardContent>
       </Link>

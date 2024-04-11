@@ -26,6 +26,7 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@testing-library/user-event": "^14.5.2",
     "axios": "^1.6.8",
+    "chart.js": "^4.4.2",
     "class-variance-authority": "^0.6.1",
     "clsx": "^1.2.1",
     "lucide-react": "^0.221.0",

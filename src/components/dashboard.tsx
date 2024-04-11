@@ -12,17 +12,36 @@ import {
   DropdownMenuContent,
   DropdownMenu,
 } from "@/components/ui/dropdown-menu";
-import { ReactNode } from "react";
+import { ReactNode, useContext, useEffect, useState } from "react";
 import {
   MenuIcon,
   Package2Icon,
   SearchIcon,
   UserCircleIcon,
 } from "@/public/Icons";
+import { AssetSocketContext } from "@/lib/AssetSocketContext";
+import { getRequestCoinList } from "@/lib/utils";
 
 export default function Dashboard({ children }: { children: ReactNode }) {
   const { toast } = useToast();
+  let listData;
+  const [search, setSearch] = useState("");
+  const [searchResults, setSearchResults] = useState();
 
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+  };
+
+  const test = async () => {
+    listData = await getRequestCoinList();
+    console.log("listData", listData);
+  };
+
+  useEffect(() => {
+    test();
+  }, []);
+
+  useEffect(() => {}, [search]);
   return (
     <div className="flex min-h-screen w-full flex-col">
       <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-white px-4 dark:bg-gray-950 md:px-6">
@@ -32,11 +51,10 @@ export default function Dashboard({ children }: { children: ReactNode }) {
             href="#"
           >
             <Package2Icon className="h-6 w-6" />
-            <span className="sr-only">Acme Inc</span>
           </Link>
           <Link
             className="text-gray-950 transition-colors hover:text-gray-950 dark:text-gray-50 dark:hover:text-gray-50"
-            href="#"
+            href="/charts"
           >
             Dashboard
           </Link>
@@ -48,33 +66,10 @@ export default function Dashboard({ children }: { children: ReactNode }) {
           </Link>
           <Link
             className="text-gray-500 transition-colors hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-50"
-            href="#"
+            href="/favorites"
           >
             Favorites
           </Link>
-          <Link
-            className="text-gray-500 transition-colors hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-50"
-            href="#"
-          >
-            Customers
-          </Link>
-          <Link
-            className="text-gray-500 transition-colors hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-50"
-            href="#"
-          >
-            Analytics
-          </Link>
-          <Button
-            onClick={() => {
-              toast({
-                title: "Create",
-                description: "Create a new product",
-              });
-            }}
-            size="sm"
-          >
-            Create
-          </Button>
         </nav>
         <Sheet>
           <SheetTrigger asChild>
@@ -106,25 +101,13 @@ export default function Dashboard({ children }: { children: ReactNode }) {
                 className="text-gray-500 hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-50"
                 href="#"
               >
-                Orders
+                Charts
               </Link>
               <Link
                 className="text-gray-500 hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-50"
                 href="#"
               >
-                Products
-              </Link>
-              <Link
-                className="text-gray-500 hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-50"
-                href="#"
-              >
-                Customers
-              </Link>
-              <Link
-                className="text-gray-500 hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-50"
-                href="#"
-              >
-                Analytics
+                Favorites
               </Link>
             </nav>
           </SheetContent>
@@ -136,6 +119,8 @@ export default function Dashboard({ children }: { children: ReactNode }) {
               <Input
                 className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
                 placeholder="Search products..."
+                value={search}
+                onChange={handleSearch}
                 type="search"
               />
             </div>

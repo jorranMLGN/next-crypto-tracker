@@ -2,33 +2,20 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { JSX, SVGProps } from "react";
-
-function ArrowUpRightIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
-) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M7 7h10v10" />
-      <path d="M7 17 17 7" />
-    </svg>
-  );
-}
+import { JSX, SVGProps, useState } from "react";
+import { ArrowUpRightIcon } from "@/public/Icons";
 
 export const CoinRow = ({ ...dataCoin }) => {
+  const priceDayChange =
+    Math.floor(dataCoin["changePercent24Hr"] * 100) / 100 + "%" || "Loading...";
+
   return (
     <TableRow>
+      <TableCell>
+        <Badge className="text-xs" variant="outline">
+          {dataCoin["rank"]}
+        </Badge>
+      </TableCell>
       <TableCell>
         <div className="text-2xl font-medium capitalize">{dataCoin["id"]}</div>
         <div className="hidden text-sm text-gray-500 dark:text-gray-400 md:inline">
@@ -36,13 +23,24 @@ export const CoinRow = ({ ...dataCoin }) => {
         </div>
       </TableCell>
       <TableCell>
-        <Badge className="text-xs" variant="outline">
-          {dataCoin["rank"]}
-        </Badge>
+        {dataCoin["supply"].length > 10
+          ? dataCoin["supply"].split(".")[0]
+          : dataCoin["supply"]}
       </TableCell>
-      <TableCell>{dataCoin["supply"]}</TableCell>
+      <TableCell>
+        <p
+          style={{
+            color: priceDayChange.includes("-") ? "red" : "green",
+          }}
+        >
+          {priceDayChange || "Loading..."}
+        </p>
+      </TableCell>
       <TableCell className="text-right text-lg">
-        $ {dataCoin["priceUsd"]}
+        $&nbsp;
+        {dataCoin["priceUsd"].length > 10
+          ? dataCoin["priceUsd"].slice(0, 10)
+          : dataCoin["priceUsd"]}
       </TableCell>
       <TableCell className={""}>
         <Button variant={"ghost"} asChild className="my-auto gap-1" size="sm">
