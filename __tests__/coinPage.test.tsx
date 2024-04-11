@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
-import Page from "@/src/app/coin/page";
+import Page from "@/src/app/coin/[slug]/page";
 
 describe("CoinPage", () => {
   it("renders", () => {

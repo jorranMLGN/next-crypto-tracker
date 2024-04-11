@@ -1,8 +1,4 @@
 export interface CoinType {
-  data: CryptoData;
-  timestamp: number;
-}
-export interface CryptoData {
   id: string;
   rank: string;
   symbol: string;
@@ -11,13 +7,8 @@ export interface CryptoData {
   maxSupply: string | null;
   marketCapUsd: string;
   volumeUsd24Hr: string;
-  priceUsd: string;
+  priceUsd: string | number;
   changePercent24Hr: string;
   vwap24Hr: string;
   explorer: string;
-}
-
-export interface CryptoResponse {
-  data: CryptoData[];
-  timestamp: number;
 }

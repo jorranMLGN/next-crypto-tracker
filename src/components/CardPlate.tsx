@@ -1,40 +1,23 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useContext, useEffect, useState } from "react";
-import { AssetSocketContext } from "@/lib/AssetSocketContext";
 import { getRequestDailyChange } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
+import { LuLoader } from "react-icons/lu";
+import { CoinType } from "@/lib/types";
 
-export default function CardPlate({
-  token,
-  title,
-  description,
-  href,
-}: {
-  token: string;
-  title?: string;
-  description?: string;
-  href?: string;
-}) {
-  const [priceDayChange, setPriceDayChange] = useState("");
-
-  const data = useContext(AssetSocketContext);
-  const [priceUpOrDown, setPriceUpOrDown] = useState(false);
+export default function CardPlate({ coin }: { coin?: CoinType | undefined }) {
+  const [priceDayChange, setPriceDayChange] = useState("Loading...");
 
   useEffect(() => {
-    getRequestDailyChange(token).then((data: any) => {
-      console.log(data);
-      const priceDayChange = data["data"]["changePercent24Hr"];
-
-      setPriceDayChange(
-        Math.floor(priceDayChange * 100) / 100 + "%" || "Loading..."
-      );
-    });
-  }, [token]);
+    if (coin) {
+      setPriceDayChange(coin.changePercent24Hr);
+    }
+  }, [coin]);
 
   // Check if content is loading
-  if (priceDayChange === "") {
+  if (!coin?.id) {
     return (
       <Card className="cursor-pointer" x-chunk="dashboard-01-chunk-0">
         <Skeleton className="h-28" />
@@ -44,23 +27,25 @@ export default function CardPlate({
 
   return (
     <Card className="cursor-pointer" x-chunk="dashboard-01-chunk-0">
-      <Link href={href || `/coin/${token}`}>
+      <Link href={`/coin/${coin?.id}`}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium capitalize">
-            {title || token}
+            {coin?.name || coin?.id || "Loading..."}
           </CardTitle>
           <Image
-            src={`https://raw.githubusercontent.com/ErikThiart/cryptocurrency-icons/master/16/${token}.png`}
-            alt={title || token}
+            src={`https://raw.githubusercontent.com/ErikThiart/cryptocurrency-icons/master/16/${coin?.id}.png`}
+            alt={coin?.name || coin?.id || "Loading..."}
             width={16}
             height={16}
           />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">
+          <span className="flex items-center text-2xl font-bold">
             $&nbsp;
-            {data[token] || "Loading..."}
-          </div>
+            {coin?.priceUsd || (
+              <LuLoader className={"animate-spin ease-in-out"} />
+            )}
+          </span>
           <p
             className="text-xs text-gray-500 dark:text-gray-400"
             style={{

@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { JSX, SVGProps, useState } from "react";
 import { ArrowUpRightIcon } from "@/public/Icons";
+import { CoinType } from "@/lib/types";
 
-export const CoinRow = ({ ...dataCoin }) => {
+export const CoinRow = (dataCoin: CoinType) => {
   const priceDayChange =
-    Math.floor(dataCoin["changePercent24Hr"] * 100) / 100 + "%" || "Loading...";
+    Math.floor(parseFloat(dataCoin["changePercent24Hr"]) * 100) / 100;
 
   return (
     <TableRow>
@@ -30,17 +31,18 @@ export const CoinRow = ({ ...dataCoin }) => {
       <TableCell>
         <p
           style={{
-            color: priceDayChange.includes("-") ? "red" : "green",
+            color: priceDayChange < 0 ? "red" : "green",
           }}
         >
-          {priceDayChange || "Loading..."}
+          {priceDayChange > 0 && "+"}
+          {priceDayChange || "Loading..."}%
         </p>
       </TableCell>
-      <TableCell className="text-right text-lg">
+      <TableCell className="text-lg">
         $&nbsp;
-        {dataCoin["priceUsd"].length > 10
-          ? dataCoin["priceUsd"].slice(0, 10)
-          : dataCoin["priceUsd"]}
+        {dataCoin.priceUsd.toString().length > 10
+          ? dataCoin.priceUsd.toString().slice(0, 10)
+          : dataCoin.priceUsd}
       </TableCell>
       <TableCell className={""}>
         <Button variant={"ghost"} asChild className="my-auto gap-1" size="sm">

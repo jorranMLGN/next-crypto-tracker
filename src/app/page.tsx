@@ -4,27 +4,17 @@ import {
   TableHead,
   TableRow,
   TableHeader,
-  TableCell,
   TableBody,
   Table,
   TableCaption,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import {
-  JSX,
-  ReactNode,
-  SetStateAction,
-  SVGProps,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { JSX, SVGProps, useCallback, useEffect, useRef, useState } from "react";
 import CardPlate from "@/components/CardPlate";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -34,41 +24,22 @@ import { CoinRow } from "@/components/component/CoinRow";
 import useItemOnScreen from "@/hooks/useItemOnScreen";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ActivityLogIcon } from "@radix-ui/react-icons";
+import useCoins from "@/src/providers/CoinContext";
+import useSWR from "swr";
 
-const CoinDifference = ({ ...dataCoin }) => {
-  return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">
-          {dataCoin["name"]}
-        </CardTitle>
-        <DollarSignIcon className="h-4 w-4 text-green-500" />
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">+5.5%</div>
-        <p className="text-xs text-gray-500 dark:text-gray-400">
-          +$3,200 since last hour
-        </p>
-      </CardContent>
-    </Card>
-  );
-};
 export default function Page() {
-  const [list, setList] = useState<CoinType[]>([]);
-  const [CoinList, setCoinList] = useState<CoinType[]>([]);
+  const [coinList, setCoinList] = useState<CoinType[]>([]);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    getRequestCoinList().then((data: any) => {
-      setCoinList(data["data"]);
-      setList(CoinList.filter((coin, index) => index < 10));
-      console.log(CoinList, "data");
-    });
-  }, []);
+  const { coins } = useCoins();
 
   const loadMore = () => {
-    setList(CoinList.filter((coin, index) => index < list.length + 10));
+    setCoinList(coins.filter((coin, index) => index < coinList.length + 10));
   };
+
+  useEffect(() => {
+    setCoinList(coins.filter((coin, index) => index < 10));
+  }, []);
 
   useItemOnScreen(bottomRef, loadMore as any, { threshold: 1 });
 
@@ -76,6 +47,72 @@ export default function Page() {
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-4 md:p-8">
       <div className="grid">
         <Card>
+          <CardHeader className="flex flex-row items-center">
+            <div className="grid gap-2">
+              <CardTitle>
+                <span className="flex flex-row items-center gap-2 text-4xl">
+                  <ActivityIcon className="h-6 w-6 text-blue-500" />
+                  Dashboard
+                </span>
+              </CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <CardDescription>
+              <span className="flex flex-row items-center gap-2">
+                Wallet Balance
+              </span>
+              <span className="flex items-center text-2xl font-bold ">
+                <DollarSignIcon className="h-6 w-6 text-green-500" />
+                3,200
+              </span>
+            </CardDescription>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
+        <Card className="xl:col-span-2" x-chunk="dashboard-01-chunk-4">
+          <CardHeader className="flex flex-row items-center">
+            <div className="grid gap-2">
+              <CardTitle>
+                Available Coins
+                <Badge variant="outline">{coins.length}&nbsp;Coins</Badge>
+              </CardTitle>
+              <CardDescription>
+                List of all available coins, sorted by popularity.
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className={" overflow-x-auto"}>
+            <Table>
+              <TableCaption ref={bottomRef}>
+                <Skeleton />
+              </TableCaption>
+              <TableHeader className={"w-full"}>
+                <TableRow>
+                  <TableHead>Rank</TableHead>
+                  <TableHead>Coin</TableHead>
+                  <TableHead>Supply</TableHead>
+                  <TableHead>
+                    Changed <Badge variant="outline">24h</Badge>
+                  </TableHead>
+
+                  <TableHead>
+                    Price&nbsp;<Badge variant="outline">USD</Badge>
+                  </TableHead>
+                  <TableHead />
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {coinList &&
+                  coinList.map((coin, index) => (
+                    <CoinRow key={index} {...coin} />
+                  ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+        <Card x-chunk="dashboard-01-chunk-5">
           <CardHeader className="flex flex-row items-center">
             <div className="grid gap-2">
               <CardTitle>
@@ -90,91 +127,12 @@ export default function Page() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-2 md:gap-12 lg:grid-cols-4">
-              <CardPlate token={"bitcoin"} />
-              <CardPlate token={"ethereum"} />
-              <CardPlate token={"litecoin"} />
-              <CardPlate token={"xrp"} />
+            <div className="flex flex-col gap-2">
+              <CardPlate coin={coins[0]} />
+              <CardPlate coin={coins[1]} />
+              <CardPlate coin={coins[2]} />
+              <CardPlate coin={coins[3]} />
             </div>
-          </CardContent>
-        </Card>
-      </div>
-      <div className="grid">
-        <Card>
-          <CardHeader className="flex flex-row items-center">
-            <div className="grid gap-2">
-              <CardTitle>
-                <div className="flex flex-row items-center gap-2">
-                  <ActivityIcon className="h-4 w-4 text-blue-500" />
-                  Dashboard
-                </div>
-              </CardTitle>
-              <CardDescription>
-                Welcome back, <span className="font-bold">John Doe</span>!
-              </CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">$1,200</div>
-            <CardDescription>
-              <span
-                style={{ color: "green" }}
-                className="flex flex-row items-center gap-2"
-              >
-                +$200
-              </span>
-              since last month
-            </CardDescription>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
-        <Card className="xl:col-span-2" x-chunk="dashboard-01-chunk-4">
-          <CardHeader className="flex flex-row items-center">
-            <div className="grid gap-2">
-              <CardTitle>
-                Available Coins
-                <Badge variant="outline">{CoinList.length}&nbsp;Coins</Badge>
-              </CardTitle>
-              <CardDescription>
-                List of all available coins, sorted by popularity.
-              </CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent className={" overflow-x-auto"}>
-            <Table>
-              <TableCaption ref={bottomRef}>
-                <Skeleton />
-              </TableCaption>
-              <TableHeader className={"w-full"}>
-                <TableRow>
-                  <TableHead>Coin</TableHead>
-                  <TableHead>Rank</TableHead>
-                  <TableHead>Supply</TableHead>
-                  <TableHead>
-                    Price&nbsp;<Badge variant="outline">USD</Badge>
-                  </TableHead>
-                  <TableHead className={"text-center"}>Go to</TableHead>
-                </TableRow>
-              </TableHeader>
-
-              <TableBody>
-                {list &&
-                  list.map((coin, index) => <CoinRow key={index} {...coin} />)}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-        <Card x-chunk="dashboard-01-chunk-5">
-          <CardHeader>
-            <CardTitle className={"flex gap-2"}>
-              Biggest Changes<Badge variant="outline">24h</Badge>
-            </CardTitle>
-          </CardHeader>
-          {/*Display the biggest changes in the last 24 hours.*/}
-          <CardContent className="grid gap-8">
-            <CoinDifference />
           </CardContent>
         </Card>
       </div>
