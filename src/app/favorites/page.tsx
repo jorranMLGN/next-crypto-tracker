@@ -67,7 +67,7 @@ export default function Page() {
   }
 
   return (
-    <main className="">
+    <main>
       <Toaster />
       <div className="mx-auto flex w-full flex-1">
         <Card className={"w-max min-w-full"} title={"Favorites"}>

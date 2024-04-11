@@ -61,13 +61,15 @@ export default function Page({ params }: { params: { slug: string } }) {
   };
 
   const isFavorite = (coin: CoinType) => {
-    return favorites.includes(coin);
+    let id = coin.id;
+    return favorites.map((coin) => coin.id).includes(id);
   };
 
   useEffect(() => {
     setCurrentCoin(
       coins.find((coin) => coin.id.toLowerCase() === slug.toLowerCase())
     );
+
     console.log(coins);
     setLoading(false); // Add this line
   }, [coins]);
@@ -116,7 +118,7 @@ export default function Page({ params }: { params: { slug: string } }) {
             <Button
               className="flex items-center justify-end gap-1 transition-all active:scale-95"
               onClick={() => {
-                favorites.includes(currentCoin as CoinType)
+                favorites.map((coin) => coin.id).includes(currentCoin?.id)
                   ? removeFromFavoritesLocal(currentCoin as CoinType)
                   : addToFavoritesLocal(currentCoin as CoinType);
               }}

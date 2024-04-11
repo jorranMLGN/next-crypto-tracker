@@ -38,7 +38,7 @@ export const CoinProvider: FC<CoinProviderProps> = ({ children }) => {
   const { data, error, isLoading } = useSWR(
     "https://api.coincap.io/v2/assets?limit=2000",
     fetcher,
-    { refreshInterval: 4000 }
+    { refreshInterval: 2000 }
   );
   useEffect(() => {
     if (data) {

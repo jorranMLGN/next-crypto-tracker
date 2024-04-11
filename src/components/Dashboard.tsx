@@ -1,17 +1,17 @@
 "use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { SheetTrigger, SheetContent, Sheet } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import {
-  DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuItem,
-  DropdownMenuContent,
-  DropdownMenu,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ReactNode, useContext, useEffect, useState } from "react";
+import { ChangeEvent, ReactNode, useContext, useEffect, useState } from "react";
 import {
   MenuIcon,
   Package2Icon,
@@ -20,11 +20,16 @@ import {
 } from "@/public/Icons";
 import { CoinContext } from "@/src/providers/CoinContext";
 import { CoinType } from "@/lib/types";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
 
 export default function Dashboard({ children }: { children: ReactNode }) {
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([] as CoinType[]);
   const { coins } = useContext(CoinContext);
+
+  const searchRef = useOutsideClick(() => {
+    setSearchResults([]);
+  });
 
   useEffect(() => {
     if (search.length < 1) {
@@ -42,7 +47,7 @@ export default function Dashboard({ children }: { children: ReactNode }) {
     setSearchResults(results);
   }, [search]);
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
 
@@ -102,13 +107,13 @@ export default function Dashboard({ children }: { children: ReactNode }) {
               </Link>
               <Link
                 className="text-gray-500 hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-50"
-                href="/charts"
+                href={"/charts"}
               >
                 Charts
               </Link>
               <Link
                 className="text-gray-500 hover:text-gray-950 dark:text-gray-400 dark:hover:text-gray-50"
-                href="/favorites"
+                href={"/favorites"}
               >
                 Favorites
               </Link>
@@ -120,7 +125,7 @@ export default function Dashboard({ children }: { children: ReactNode }) {
             <div className="relative">
               <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
               <Input
-                className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
+                className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px] "
                 placeholder="Search products..."
                 value={search}
                 onChange={(e) => handleSearch(e)}
@@ -128,7 +133,10 @@ export default function Dashboard({ children }: { children: ReactNode }) {
               />
             </div>
             {searchResults.length > 0 && (
-              <div className="absolute top-full z-50 mt-2 max-h-[300px] overflow-y-auto   rounded-md border border-accent bg-background shadow-lg">
+              <div
+                ref={searchRef as any}
+                className="absolute top-full z-50  max-h-[300px] overflow-y-auto overscroll-auto rounded-md border border-accent bg-background shadow-lg sm:w-[300px] md:w-[200px] lg:w-[300px]"
+              >
                 {searchResults
                   .slice(
                     0,

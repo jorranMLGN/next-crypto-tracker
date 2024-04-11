@@ -2,7 +2,7 @@ import "@/styles/globals.scss";
 import { Inter } from "next/font/google";
 import { ReactNode } from "react";
 import { CoinProvider } from "@/src/providers/CoinContext";
-import Dashboard from "@/components/dashboard";
+import Dashboard from "@/components/Dashboard";
 import { RecoilProvider } from "@/src/providers/RecoilProvider";
 
 const inter = Inter({ subsets: ["latin"] });
