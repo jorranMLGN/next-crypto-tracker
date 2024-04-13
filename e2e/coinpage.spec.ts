@@ -9,3 +9,13 @@ test("should render the page with the correct coin based on the slug parameter",
   const h1Content = await page.textContent("h1");
   expect(h1Content).toContain("Bitcoin");
 });
+
+test("should render a loading spinner if the current coin is undefined or loading is true", async ({
+  page,
+}) => {
+  // Check that the loader is present
+  await page.goto("http://localhost:3000/coin/trtugyfhg");
+
+  const loader = await page.waitForSelector(".mx-auto > .flex");
+  expect(loader).toBeDefined();
+});
