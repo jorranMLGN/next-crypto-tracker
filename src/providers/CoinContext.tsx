@@ -36,7 +36,7 @@ export const CoinProvider: FC<CoinProviderProps> = ({ children }) => {
     []
   );
   const { data, error, isLoading } = useSWR(
-    "https://api.coincap.io/v2/assets?limit=2000",
+    "https://api.coincap.io/v2/assets?limit=100",
     fetcher,
     { refreshInterval: 2000 }
   );

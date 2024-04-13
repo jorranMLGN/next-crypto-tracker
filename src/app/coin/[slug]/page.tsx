@@ -28,8 +28,12 @@ import { StarIcon, UploadIcon } from "@/public/Icons";
 import { ChevronLeftIcon, PlusCircleIcon } from "lucide-react";
 import { useRecoilState } from "recoil";
 import { favoriteListState } from "@/src/store/atoms/favoriteAtom";
+import { useRouter } from "next/router";
 
 export default function Page({ params }: { params: { slug: string } }) {
+  // const router = useRouter();
+  //mount router
+
   const { slug } = params;
   let { coins } = useCoins();
   const [loading, setLoading] = useState(true); // Add this line
@@ -61,8 +65,7 @@ export default function Page({ params }: { params: { slug: string } }) {
   };
 
   const isFavorite = (coin: CoinType) => {
-    let id = coin.id;
-    return favorites.map((coin) => coin.id).includes(id);
+    return favorites.some((c) => c.id === coin.id);
   };
 
   useEffect(() => {
@@ -79,7 +82,10 @@ export default function Page({ params }: { params: { slug: string } }) {
       <main className="grid flex-1 items-start gap-4 p-4  sm:py-0 md:gap-8">
         <Toaster />
         <Button
-          onClick={() => window.open("/", "_self")}
+          onClick={
+            () => window.history.back()
+            // () => router.back()
+          }
           className="h-12 w-12 rounded-xl"
           size="icon"
           variant="outline"
@@ -102,7 +108,10 @@ export default function Page({ params }: { params: { slug: string } }) {
       <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
         <div className="flex items-center gap-4">
           <Button
-            onClick={() => window.history.back()}
+            onClick={
+              () => window.history.back()
+              // () => router.back()
+            }
             className="h-7 w-7"
             size="icon"
             variant="outline"
