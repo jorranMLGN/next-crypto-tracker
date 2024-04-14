@@ -5,35 +5,22 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useEffect, useState } from "react";
-import Overview from "@/components/OverviewChart";
 import useCoins from "@/src/providers/CoinContext";
 import { toast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { CoinType } from "@/lib/types";
 import { LuLoader } from "react-icons/lu";
 import { StarIcon, UploadIcon } from "@/public/Icons";
-import { ChevronLeftIcon, PlusCircleIcon } from "lucide-react";
+import { ChevronLeftIcon } from "lucide-react";
 import { useRecoilState } from "recoil";
 import { favoriteListState } from "@/src/store/atoms/favoriteAtom";
-import { useRouter } from "next/router";
 
 export default function Page({ params }: { params: { slug: string } }) {
-  // const router = useRouter();
-  //mount router
-
   const { slug } = params;
   let { coins } = useCoins();
   const [loading, setLoading] = useState(true); // Add this line
@@ -82,10 +69,7 @@ export default function Page({ params }: { params: { slug: string } }) {
       <main className="grid flex-1 items-start gap-4 p-4  sm:py-0 md:gap-8">
         <Toaster />
         <Button
-          onClick={
-            () => window.history.back()
-            // () => router.back()
-          }
+          onClick={() => window.history.back()}
           className="h-12 w-12 rounded-xl"
           size="icon"
           variant="outline"
@@ -108,10 +92,7 @@ export default function Page({ params }: { params: { slug: string } }) {
       <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
         <div className="flex items-center gap-4">
           <Button
-            onClick={
-              () => window.history.back()
-              // () => router.back()
-            }
+            onClick={() => window.history.back()}
             className="h-7 w-7"
             size="icon"
             variant="outline"
@@ -171,7 +152,6 @@ export default function Page({ params }: { params: { slug: string } }) {
                     <Label htmlFor="description">Total Cost $</Label>
                     <Input
                       className="w-fit"
-                      defaultValue="0.00"
                       value={(
                         buyAmount * (currentCoin?.priceUsd as number)
                       ).toFixed(2)}
@@ -185,62 +165,44 @@ export default function Page({ params }: { params: { slug: string } }) {
             </Card>
             <Card x-chunk="dashboard-07-chunk-1">
               <CardHeader>
-                <CardTitle>{currentCoin?.name} Overview</CardTitle>
-                <CardDescription>
-                  Lipsum dolor sit amet, consectetur adipiscing elit
-                </CardDescription>
+                <CardTitle>Market Cap</CardTitle>
               </CardHeader>
               <CardContent>
-                <Overview />
+                <p className="text-2xl font-bold">
+                  $
+                  {parseFloat(currentCoin?.marketCapUsd as string).toFixed(2) ||
+                    0}
+                </p>
               </CardContent>
-              <CardFooter className="justify-center border-t p-4">
-                <Button className="gap-1" size="sm" variant="ghost">
-                  <PlusCircleIcon className="h-3.5 w-3.5" />
-                  Add Variant
-                </Button>
-              </CardFooter>
             </Card>
+
             <Card x-chunk="dashboard-07-chunk-2">
               <CardHeader>
-                <CardTitle>Product Category</CardTitle>
+                <CardTitle>24 Hour Volume</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-6 sm:grid-cols-3">
-                  <div className="grid gap-3">
-                    <Label htmlFor="category">Category</Label>
-                    <Select>
-                      <SelectTrigger aria-label="Select category" id="category">
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="clothing">Clothing</SelectItem>
-                        <SelectItem value="electronics">Electronics</SelectItem>
-                        <SelectItem value="accessories">Accessories</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="subcategory">Subcategory (optional)</Label>
-                    <Select>
-                      <SelectTrigger
-                        aria-label="Select subcategory"
-                        id="subcategory"
-                      >
-                        <SelectValue placeholder="Select subcategory" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="t-shirts">T-Shirts</SelectItem>
-                        <SelectItem value="hoodies">Hoodies</SelectItem>
-                        <SelectItem value="sweatshirts">Sweatshirts</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
+                <p className="text-2xl font-bold">
+                  $
+                  {parseFloat(currentCoin?.volumeUsd24Hr as string).toFixed(
+                    2
+                  ) || 0}
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card x-chunk="dashboard-07-chunk-3">
+              <CardHeader>
+                <CardTitle>Max Supply</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold">
+                  {currentCoin?.maxSupply || "N/A"}
+                </p>
               </CardContent>
             </Card>
           </div>
           <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
-            <Card x-chunk="dashboard-07-chunk-3">
+            <Card x-chunk="dashboard-07-chunk-4">
               <CardHeader>
                 <CardTitle>{currentCoin?.name}&nbsp;Price</CardTitle>
               </CardHeader>
@@ -257,61 +219,18 @@ export default function Page({ params }: { params: { slug: string } }) {
                 </div>
               </CardContent>
             </Card>
-            <Card className="overflow-hidden" x-chunk="dashboard-07-chunk-4">
-              <CardHeader>
-                <CardTitle>Product Images</CardTitle>
-                <CardDescription>
-                  Lipsum dolor sit amet, consectetur adipiscing elit
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-2">
-                  <img
-                    alt="Product image"
-                    className="aspect-square w-full rounded-md object-cover"
-                    height="300"
-                    src="/placeholder.svg"
-                    width="300"
-                  />
-                  <div className="grid grid-cols-3 gap-2">
-                    <button>
-                      <img
-                        alt="Product image"
-                        className="aspect-square w-full rounded-md object-cover"
-                        height="84"
-                        src="/placeholder.svg"
-                        width="84"
-                      />
-                    </button>
-                    <button>
-                      <img
-                        alt="Product image"
-                        className="aspect-square w-full rounded-md object-cover"
-                        height="84"
-                        src="/placeholder.svg"
-                        width="84"
-                      />
-                    </button>
-                    <button className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed border-gray-200 dark:border-gray-800">
-                      <UploadIcon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                      <span className="sr-only">Upload</span>
-                    </button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
             <Card x-chunk="dashboard-07-chunk-5">
               <CardHeader>
-                <CardTitle>Archive Product</CardTitle>
-                <CardDescription>
-                  Lipsum dolor sit amet, consectetur adipiscing elit.
-                </CardDescription>
+                <CardTitle>Explorer</CardTitle>
               </CardHeader>
               <CardContent>
-                <div />
-                <Button size="sm" variant="secondary">
-                  Archive Product
-                </Button>
+                <a
+                  href={currentCoin?.explorer}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {currentCoin?.explorer || "N/A"}
+                </a>
               </CardContent>
             </Card>
           </div>

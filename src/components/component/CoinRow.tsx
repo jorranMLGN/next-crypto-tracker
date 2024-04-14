@@ -8,25 +8,25 @@ import { CoinType } from "@/lib/types";
 
 export const CoinRow = (dataCoin: CoinType) => {
   const priceDayChange =
-    Math.floor(parseFloat(dataCoin["changePercent24Hr"]) * 100) / 100;
+    Math.floor(parseFloat(dataCoin.changePercent24Hr) * 100) / 100;
 
   return (
     <TableRow>
       <TableCell>
         <Badge className="text-xs" variant="outline">
-          {dataCoin["rank"]}
+          {dataCoin.rank}
         </Badge>
       </TableCell>
       <TableCell>
-        <div className="text-2xl font-medium capitalize">{dataCoin["id"]}</div>
+        <div className="text-2xl font-medium capitalize">{dataCoin.id}</div>
         <div className="hidden text-sm text-gray-500 dark:text-gray-400 md:inline">
-          {dataCoin["name"]}
+          {dataCoin.name}
         </div>
       </TableCell>
       <TableCell>
-        {dataCoin["supply"].length > 10
-          ? dataCoin["supply"].split(".")[0]
-          : dataCoin["supply"]}
+        {dataCoin.supply.length > 10
+          ? dataCoin.supply.split(".")[0]
+          : dataCoin.supply}
       </TableCell>
       <TableCell>
         <p
@@ -44,10 +44,10 @@ export const CoinRow = (dataCoin: CoinType) => {
           ? dataCoin.priceUsd.toString().slice(0, 10)
           : dataCoin.priceUsd}
       </TableCell>
-      <TableCell className={""}>
+      <TableCell>
         <Button variant={"ghost"} asChild className="my-auto gap-1" size="sm">
           <Link
-            href={`/coin/${dataCoin["id"]}
+            href={`/coin/${dataCoin.id}
           `}
           >
             View

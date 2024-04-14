@@ -1,15 +1,15 @@
 "use client";
 import { Toaster } from "@/components/ui/toaster";
 import {
-  TableHead,
-  TableRow,
-  TableHeader,
-  TableBody,
   Table,
+  TableBody,
   TableCaption,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { JSX, SVGProps, useCallback, useEffect, useRef, useState } from "react";
+import { JSX, SVGProps, useEffect, useRef, useState } from "react";
 import CardPlate from "@/components/CardPlate";
 import {
   Card,
@@ -18,14 +18,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getRequestCoinList } from "@/lib/utils";
 import { CoinType } from "@/lib/types";
 import { CoinRow } from "@/components/component/CoinRow";
 import useItemOnScreen from "@/hooks/useItemOnScreen";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ActivityLogIcon } from "@radix-ui/react-icons";
 import useCoins from "@/src/providers/CoinContext";
-import useSWR from "swr";
 
 export default function Page() {
   const [coinList, setCoinList] = useState<CoinType[]>([]);

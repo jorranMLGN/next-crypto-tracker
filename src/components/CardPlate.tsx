@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useContext, useEffect, useState } from "react";
-import { getRequestDailyChange } from "@/lib/utils";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
