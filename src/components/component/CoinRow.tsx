@@ -2,7 +2,6 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { JSX, SVGProps, useState } from "react";
 import { ArrowUpRightIcon } from "@/public/Icons";
 import { CoinType } from "@/lib/types";
 

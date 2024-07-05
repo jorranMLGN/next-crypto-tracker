@@ -16,10 +16,10 @@ export default function CardPlate({ coin }: { coin?: CoinType | undefined }) {
   }, [coin]);
 
   // Check if content is loading
-  if (!coin?.id) {
+  if (!coin) {
     return (
-      <Card className="cursor-pointer" x-chunk="dashboard-01-chunk-0">
-        <Skeleton className="h-28" />
+      <Card className="cursor-pointer">
+        <Skeleton id={"skeleton"} className="skeleton h-28" />
       </Card>
     );
   }
@@ -29,7 +29,7 @@ export default function CardPlate({ coin }: { coin?: CoinType | undefined }) {
       <Link href={`/coin/${coin?.id}`}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium capitalize">
-            {coin?.name || coin?.id || "Loading..."}
+            {coin.name ? coin.name : coin.id}
           </CardTitle>
           <Image
             src={`https://raw.githubusercontent.com/ErikThiart/cryptocurrency-icons/master/16/${coin?.id}.png`}
